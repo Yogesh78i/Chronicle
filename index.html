@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chronicle — turn your days into a saga</title>
+<meta name="description" content="Chronicle is a Life RPG that turns your real tasks into quests, levels, and streaks.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<!-- ============================= AUTH VIEW ============================= -->
+<main id="auth-view" class="auth-view" aria-labelledby="auth-heading">
+  <div class="auth-card">
+    <p class="auth-mark" aria-hidden="true">✦</p>
+    <h1 id="auth-heading">Chronicle</h1>
+    <p class="auth-tagline">Every task you finish is another line in your saga.</p>
+
+    <div class="auth-tabs" role="tablist" aria-label="Sign in or create an account">
+      <button role="tab" id="tab-login" aria-controls="panel-login" aria-selected="true" class="auth-tab is-active">Sign in</button>
+      <button role="tab" id="tab-register" aria-controls="panel-register" aria-selected="false" class="auth-tab">Create account</button>
+    </div>
+
+    <form id="panel-login" role="tabpanel" aria-labelledby="tab-login" class="auth-form">
+      <label for="login-identifier">Username or email</label>
+      <input id="login-identifier" name="identifier" type="text" autocomplete="username" required>
+
+      <label for="login-password">Password</label>
+      <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+
+      <p class="form-error" id="login-error" role="alert" aria-live="polite"></p>
+      <button type="submit" class="btn btn-primary">Enter the chronicle</button>
+    </form>
+
+    <form id="panel-register" role="tabpanel" aria-labelledby="tab-register" class="auth-form is-hidden">
+      <label for="reg-username">Username</label>
+      <input id="reg-username" name="username" type="text" autocomplete="username" minlength="3" maxlength="20" required>
+
+      <label for="reg-email">Email</label>
+      <input id="reg-email" name="email" type="email" autocomplete="email" required>
+
+      <label for="reg-password">Password</label>
+      <input id="reg-password" name="password" type="password" autocomplete="new-password" minlength="8" required>
+      <p class="field-hint">At least 8 characters.</p>
+
+      <p class="form-error" id="register-error" role="alert" aria-live="polite"></p>
+      <button type="submit" class="btn btn-primary">Begin your saga</button>
+    </form>
+  </div>
+</main>
+
+<!-- ============================= APP VIEW ============================= -->
+<div id="app-view" class="app-view is-hidden">
+
+  <header class="app-topbar">
+    <p class="brand"><span aria-hidden="true">✦</span> Chronicle</p>
+    <nav class="tabs" aria-label="Main sections">
+      <button class="tab-btn is-active" data-view="quests" aria-current="page">Quest Log</button>
+      <button class="tab-btn" data-view="character">Character</button>
+      <button class="tab-btn" data-view="shop">Market</button>
+    </nav>
+    <button id="logout-btn" class="btn btn-ghost">Sign out</button>
+  </header>
+
+  <div class="app-body">
+
+    <!-- Character summary sidebar, visible on every tab -->
+    <aside class="sidebar" aria-label="Character summary">
+      <div class="sigil" id="sigil" aria-hidden="true"></div>
+      <p class="char-name" id="char-username">Adventurer</p>
+      <p class="char-title" id="char-title">Wandering Novice</p>
+
+      <div class="level-block">
+        <p class="level-label">Level <span id="char-level">1</span></p>
+        <div class="xp-bar" role="progressbar" aria-label="Experience progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="xp-bar-fill" id="xp-fill"></div>
+        </div>
+        <p class="xp-caption"><span id="xp-current">0</span> / <span id="xp-needed">100</span> XP</p>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-pill gold-pill">
+          <span aria-hidden="true">◆</span>
+          <span><span id="char-gold">0</span> gold</span>
+        </div>
+        <div class="stat-pill streak-pill">
+          <span aria-hidden="true">🔥</span>
+          <span><span id="char-streak">0</span> day streak</span>
+        </div>
+      </div>
+
+      <ul class="attribute-list" id="attribute-list" aria-label="Attributes"></ul>
+    </aside>
+
+    <section class="main-panel" id="main" tabindex="-1">
+
+      <!-- QUESTS VIEW -->
+      <section id="view-quests" class="view">
+        <div class="view-header">
+          <h2>Quest Log</h2>
+          <button id="new-quest-btn" class="btn btn-primary">New quest</button>
+        </div>
+
+        <form id="new-quest-form" class="quest-form is-hidden" aria-label="Add a new quest">
+          <label for="quest-title">Quest title</label>
+          <input id="quest-title" maxlength="140" required placeholder="e.g. Read 20 pages of a book">
+
+          <label for="quest-notes">Notes (optional)</label>
+          <textarea id="quest-notes" maxlength="1000" rows="2"></textarea>
+
+          <div class="form-grid">
+            <div>
+              <label for="quest-attribute">Attribute</label>
+              <select id="quest-attribute">
+                <option value="intellect">Intellect (study, coding, reading)</option>
+                <option value="strength">Strength (gym, sport, physical work)</option>
+                <option value="spirit">Spirit (mindfulness, rest, relationships)</option>
+                <option value="discipline" selected>Discipline (chores, admin, habits)</option>
+              </select>
+            </div>
+            <div>
+              <label for="quest-difficulty">Difficulty</label>
+              <select id="quest-difficulty">
+                <option value="trivial">Trivial · 10 XP</option>
+                <option value="easy">Easy · 20 XP</option>
+                <option value="medium" selected>Medium · 35 XP</option>
+                <option value="hard">Hard · 55 XP</option>
+                <option value="epic">Epic · 90 XP</option>
+              </select>
+            </div>
+          </div>
+
+          <p class="form-error" id="quest-error" role="alert" aria-live="polite"></p>
+          <div class="form-actions">
+            <button type="button" id="cancel-quest-btn" class="btn btn-ghost">Cancel</button>
+            <button type="submit" class="btn btn-primary">Log quest</button>
+          </div>
+        </form>
+
+        <div id="quest-list" class="quest-list" aria-live="polite"></div>
+        <p id="quest-empty" class="empty-state is-hidden">No quests yet. Every saga starts with a single line — add your first quest above.</p>
+      </section>
+
+      <!-- CHARACTER VIEW -->
+      <section id="view-character" class="view is-hidden">
+        <div class="view-header"><h2>Character Sheet</h2></div>
+        <div class="character-grid">
+          <div class="panel-card">
+            <h3>Attributes</h3>
+            <ul class="attribute-list-large" id="attribute-list-large"></ul>
+          </div>
+          <div class="panel-card">
+            <h3>Streak</h3>
+            <p class="big-stat" id="streak-big">0</p>
+            <p class="muted">Longest streak: <span id="streak-longest">0</span> days</p>
+          </div>
+          <div class="panel-card panel-wide">
+            <h3>Recent Chronicle</h3>
+            <ul class="log-list" id="recent-log"></ul>
+            <p id="log-empty" class="empty-state is-hidden">Nothing logged yet — completed quests will appear here.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SHOP VIEW -->
+      <section id="view-shop" class="view is-hidden">
+        <div class="view-header"><h2>Market</h2></div>
+        <div class="shop-grid" id="shop-grid"></div>
+      </section>
+
+    </section>
+  </div>
+</div>
+
+<div id="toast" class="toast is-hidden" role="status" aria-live="polite"></div>
+<div id="levelup-banner" class="levelup-banner is-hidden" role="status" aria-live="assertive"></div>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
